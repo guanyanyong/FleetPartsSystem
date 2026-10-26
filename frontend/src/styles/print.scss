@@ -1,0 +1,78 @@
+/* 仅打印时显示 */
+.print-only {
+  display: none;
+}
+
+@media print {
+  /* 纸张尺寸由 LabelPrint 按「标签纸 40×40 / A4」动态注入，这里只保留默认边距 */
+  @page {
+    margin: 8mm;
+  }
+
+  html,
+  body {
+    width: 100%;
+    background: #fff !important;
+  }
+
+  /* 弹窗打开时 Element Plus 会锁定 body 滚动，打印时需恢复，否则可能只输出第一页 */
+  .el-popup-parent--hidden,
+  body {
+    overflow: visible !important;
+  }
+
+  /* 打印时取消布局高度限制，保证多张标签可跨页输出 */
+  .app-layout {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .app-body {
+    display: block !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* 打印时隐藏导航、按钮、分页等交互元素 */
+  .no-print,
+  .app-sidebar,
+  .app-header,
+  .el-menu,
+  .el-pagination,
+  .el-button,
+  .el-dropdown {
+    display: none !important;
+  }
+
+  .app-main,
+  .page-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .el-card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* 库存件标签基础样式（配合 LabelCard / LabelPrint 组件使用，尺寸 40mm × 40mm） */
+  .label {
+    box-sizing: border-box;
+    width: 40mm;
+    height: 40mm;
+    padding: 2mm;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border: 1px dashed #ccc;
+  }
+
+  a[href]::after {
+    content: '';
+  }
+}

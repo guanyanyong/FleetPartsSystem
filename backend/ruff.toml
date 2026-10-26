@@ -1,0 +1,6 @@
+# ruff 配置
+# 项目根目录下的 alembic/ 是迁移脚本目录（无 __init__.py），
+# 不声明的话 ruff 会把它当成第一方模块，把 env.py 里的
+# `from alembic import context` 排到第一方 import 分组，产生 I001 告警。
+[lint.isort]
+known-third-party = ["alembic"]

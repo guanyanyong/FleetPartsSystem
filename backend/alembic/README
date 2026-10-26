@@ -1,0 +1,17 @@
+Generic single-database configuration with an async dbapi.
+
+# 本项目迁移约定（重要）
+
+1. 连接信息不在 alembic.ini 中，由 env.py 从 backend/.env 的 DB_* 读取。
+2. 防误删三层保护（见 env.py / app/db/migration_guard.py）：
+   - autogenerate 忽略“库里有、模型没有”的表和索引；
+   - autogenerate 出现删表/删列时直接抛错，不生成脚本；
+   - 执行迁移时拦截 DROP TABLE / TRUNCATE / ALTER TABLE ... DROP。
+3. 首次接入（已完成）：alembic stamp head（基线 0001_baseline，不含任何 DDL）。
+4. 日常流程：
+   - 改完模型后先 `python -m alembic check`，确认没有意外差异；
+   - `python -m alembic revision --autogenerate -m "说明"`，**人工复核**生成的脚本；
+   - `python -m alembic upgrade head`。
+5. 确实要删表/删列：先备份数据库，再设置
+   `ALEMBIC_ALLOW_DESTRUCTIVE=1` 后才允许生成和执行。
+6. 生产库建议给应用账号只授予 DML + 必要 DDL，DROP 权限单独由运维账号持有。
